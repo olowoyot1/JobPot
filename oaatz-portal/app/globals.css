@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #F7F3EA;
+  color: #16213E;
+  font-family: 'Inter', sans-serif;
+}
+
+.tag {
+  font-size: 11px;
+  background: #F7F3EA;
+  border: 1px solid #E4DCC8;
+  padding: 3px 9px;
+  border-radius: 20px;
+  color: #5C6B73;
+}
+
+.badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.badge.bilateral { background: #EFE6D2; color: #A87F2A; }
+.badge.schengen { background: #DEE9E6; color: #2F6E63; }
+.badge.nonschengen { background: #E7E1F5; color: #5B4B9E; }
