@@ -84,17 +84,17 @@ Vercel runs `npm install` (which triggers `prisma generate` via `postinstall`), 
 
 ### First-time database setup on the live database
 
-After the first deploy, run these once from your local machine, pointed at the
-**production** `DATABASE_URL` (put it temporarily in `.env` or prefix the commands):
+No terminal needed for this. The `build` script now runs `prisma db push` and the
+seed script automatically on every deploy (the seed script checks if data already
+exists and skips itself after the first run, so it's safe to run on every build).
 
-```bash
-npx prisma db push
-npm run db:seed
-```
+As long as `DATABASE_URL` is set in your Vercel project's environment variables
+before the build runs, Vercel will create the tables and load the 44 starter
+destinations for you automatically the first time it deploys successfully.
 
-This creates the tables and loads the 44 starter destinations with default packages.
-After that, everything else (adding countries, packages, editing prices) is done through
-`/admin` on the live site — no redeploy needed.
+If you connected a database via the Storage tab *after* your first deploy, just
+trigger a redeploy (Deployments → ⋯ → Redeploy) once `DATABASE_URL` exists — the
+next build will create the tables and seed the data.
 
 ### Redeploys
 
