@@ -1,4 +1,5 @@
 import { getSettings } from '../lib/settings';
+import { toWhatsAppLink } from '../lib/whatsapp';
 
 export default async function Footer() {
   const settings = await getSettings().catch(() => ({
@@ -8,6 +9,8 @@ export default async function Footer() {
     contactWhatsapp: '',
     businessHours: 'Mon-Fri, 09:00-18:00',
   }));
+
+  const waLink = toWhatsAppLink(settings.contactWhatsapp, `Hi ${settings.siteName}, I have a question.`);
 
   return (
     <footer className="bg-navydeep text-[#C9C9C9] px-6 pt-11 pb-6 mt-16">
@@ -20,6 +23,7 @@ export default async function Footer() {
           <h4 className="text-white font-display text-base mb-3">Company</h4>
           <ul className="text-sm space-y-2">
             <li><a href="/#marketplace">Destinations</a></li>
+            <li><a href="/contact">Contact us</a></li>
             <li><a href="/login">Log in</a></li>
             <li><a href="/affiliate/signup">Become a partner</a></li>
             <li><a href="/staff/login">Staff login</a></li>
@@ -29,8 +33,16 @@ export default async function Footer() {
         <div>
           <h4 className="text-white font-display text-base mb-3">Contact</h4>
           <ul className="text-sm space-y-2">
-            <li>{settings.contactEmail}</li>
-            <li>WhatsApp: {settings.contactWhatsapp || '[Not set]'}</li>
+            <li><a href={`mailto:${settings.contactEmail}`} className="hover:text-white">{settings.contactEmail}</a></li>
+            <li>
+              {waLink ? (
+                <a href={waLink} target="_blank" rel="noreferrer" className="hover:text-white">
+                  WhatsApp: {settings.contactWhatsapp}
+                </a>
+              ) : (
+                <span>WhatsApp: [Not set]</span>
+              )}
+            </li>
             <li>{settings.businessHours}</li>
           </ul>
         </div>

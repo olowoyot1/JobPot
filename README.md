@@ -106,7 +106,10 @@ GitHub integration is connected.
 - **Payments**: the buy flow creates an order with status `pending` — no card is charged.
   Wire up Stripe, Paystack, or Flutterwave in `actions/orders.js` (`createOrder`) before
   taking real payments.
-- **Emails**: no confirmation or notification emails are sent yet.
+- **Emails**: the contact form sends real emails (via SMTP). Order purchases, batch
+  approvals, and document status changes do *not* trigger emails yet — candidates only
+  see status updates by logging into `/account`. Easy to add later using the same
+  `lib/email.js` helper if you want transactional emails too.
 - **Rate limiting / abuse protection**: not implemented — add before public launch.
 
 ## Features
@@ -131,6 +134,34 @@ GitHub integration is connected.
   text, and contact details shown in the header/footer everywhere. The stats bar
   (destination/vacancy counts) and the marketplace grid itself stay as fixed sections
   since they're generated from live data rather than editable text.
+- **Contact system**: a floating "Chat on WhatsApp" button (site-wide, uses the WhatsApp
+  number set in `/admin/settings`) plus a `/contact` page with a real form that emails
+  your configured contact address via SMTP, and sends the sender an automatic
+  confirmation email. Footer email/WhatsApp are clickable links too.
+
+## Extra setup: contact form emails (your cPanel email)
+
+The contact form sends real emails using your existing cPanel-hosted email account via
+standard SMTP — no third-party email service needed.
+
+1. In cPanel → **Email Accounts**, find the address you want to send from
+2. Click **Connect Devices** (or **Configure Mail Client** depending on cPanel version)
+3. Under **Manual Settings / Outgoing Server (SMTP)**, note down:
+   - **Server**: usually `mail.yourdomain.com`
+   - **Port**: `465` (SSL) is the usual choice — `587` (STARTTLS) also works
+   - **Username**: your full email address
+   - **Password**: that email account's password
+4. Set these as environment variables (locally in `.env`, and in Vercel's Environment
+   Variables): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`
+
+Without these set, the contact form shows a friendly "email is not configured yet"
+message instead of crashing — everything else on the site works fine.
+
+**Note on deliverability**: some hosting providers restrict outgoing SMTP connections
+from external servers (like Vercel) for security. If sending fails, check cPanel →
+**Security → Remote MySQL** equivalent for mail (sometimes called "SMTP Restrictions"
+under WHM if you have access, or contact your hosting provider) to confirm outbound
+SMTP auth from external IPs is allowed on your plan.
 
 ## Extra setup: document uploads (Vercel Blob)
 
