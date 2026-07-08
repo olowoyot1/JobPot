@@ -49,17 +49,19 @@ model Package {
 }
 
 model User {
-  id           String      @id @default(cuid())
-  name         String
-  email        String      @unique
-  phone        String?
-  preferred    String?
-  password     String
-  referredById String?
-  referredBy   Affiliate?  @relation("AffiliateReferrals", fields: [referredById], references: [id])
-  createdAt    DateTime    @default(now())
-  orders       Order[]
-  documents    Document[]
+  id                String      @id @default(cuid())
+  name              String
+  email             String      @unique
+  phone             String?
+  preferred         String?
+  password          String
+  resetToken        String?     @unique
+  resetTokenExpiry  DateTime?
+  referredById      String?
+  referredBy        Affiliate?  @relation("AffiliateReferrals", fields: [referredById], references: [id])
+  createdAt         DateTime    @default(now())
+  orders            Order[]
+  documents         Document[]
 }
 
 model Document {

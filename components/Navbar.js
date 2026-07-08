@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getCurrentUser } from '../lib/require-user';
 import { getSettings } from '../lib/settings';
+import LogoutButton from './LogoutButton';
 
 export default async function Navbar() {
   const [user, settings] = await Promise.all([
@@ -23,15 +24,23 @@ export default async function Navbar() {
         <Link href="/#marketplace" className="opacity-80 hover:opacity-100">Destinations</Link>
         {user && <Link href="/account" className="opacity-80 hover:opacity-100">My Account</Link>}
       </div>
-      <div>
+      <div className="flex items-center gap-3">
         {user ? (
-          <Link href="/account" className="bg-white/10 border border-white/30 text-sm px-4 py-2 rounded">
-            👋 {user.name.split(' ')[0]}
-          </Link>
+          <>
+            <Link href="/account" className="bg-white/10 border border-white/30 text-sm px-4 py-2 rounded">
+              👋 {user.name.split(' ')[0]}
+            </Link>
+            <LogoutButton variant="nav" />
+          </>
         ) : (
-          <Link href="/signup" className="bg-gold text-navydeep font-semibold text-sm px-4 py-2 rounded hover:bg-amber">
-            Create free account
-          </Link>
+          <>
+            <Link href="/login" className="text-sm font-semibold px-4 py-2 rounded border border-white/30 hover:border-white">
+              Log in
+            </Link>
+            <Link href="/signup" className="bg-gold text-navydeep font-semibold text-sm px-4 py-2 rounded hover:bg-amber">
+              Create account
+            </Link>
+          </>
         )}
       </div>
     </nav>

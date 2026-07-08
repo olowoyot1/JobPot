@@ -1,9 +1,12 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
+import crypto from 'crypto';
 import { prisma } from '../lib/db';
 import { hashPassword, verifyPassword } from '../lib/password';
 import { signSession, signAdminSession } from '../lib/auth';
+import { sendEmail } from '../lib/email';
+import { getSettings } from '../lib/settings';
 
 export async function signupAction(formData) {
   const name = String(formData.get('name') || '').trim();
@@ -106,5 +109,81 @@ export async function adminLoginAction(formData) {
 
 export async function adminLogoutAction() {
   (await cookies()).delete('admin_session');
+  return { success: true };
+}
+
+async function getSiteOrigin() {
+  const h = await headers();
+  const host = h.get('host');
+  const protocol = host?.startsWith('localhost') ? 'http' : 'https';
+  return `${protocol}://${host}`;
+}
+
+export async function requestPasswordReset(formData) {
+  const email = String(formData.get('email') || '').trim().toLowerCase();
+  if (!email) {
+    return { error: 'Please enter your email address.' };
+  }
+
+  const user = await prisma.user.findUnique({ where: { email } });
+
+  // Always report success, whether or not the account exists — avoids leaking
+  // which emails are registered.
+  if (!user) {
+    return { success: true };
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { resetToken: token, resetTokenExpiry: expiry },
+  });
+
+  const origin = await getSiteOrigin();
+  const settings = await getSettings();
+  const resetLink = `${origin}/reset-password?token=${token}`;
+
+  await sendEmail({
+    to: user.email,
+    subject: `Reset your password — ${settings.siteName}`,
+    html: `
+      <p>Hi ${user.name},</p>
+      <p>We received a request to reset your password. Click the link below to choose a new one — this link expires in 1 hour:</p>
+      <p><a href="${resetLink}">${resetLink}</a></p>
+      <p>If you didn't request this, you can safely ignore this email.</p>
+    `,
+  });
+
+  return { success: true };
+}
+
+export async function resetPassword(formData) {
+  const token = String(formData.get('token') || '').trim();
+  const password = String(formData.get('password') || '');
+  const confirmPassword = String(formData.get('confirmPassword') || '');
+
+  if (!token) {
+    return { error: 'Missing or invalid reset link.' };
+  }
+  if (password.length < 6) {
+    return { error: 'Password should be at least 6 characters.' };
+  }
+  if (password !== confirmPassword) {
+    return { error: 'Passwords do not match.' };
+  }
+
+  const user = await prisma.user.findUnique({ where: { resetToken: token } });
+  if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {
+    return { error: 'This reset link is invalid or has expired. Please request a new one.' };
+  }
+
+  const hashed = await hashPassword(password);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashed, resetToken: null, resetTokenExpiry: null },
+  });
+
   return { success: true };
 }

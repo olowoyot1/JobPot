@@ -33,12 +33,15 @@ export default function LoginPage() {
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wide text-ink mb-1">Password</label>
             <input name="password" type="password" required placeholder="Your password" className="w-full border border-line rounded px-3 py-2.5 bg-paper text-sm" />
+            <div className="text-right mt-1.5">
+              <Link href="/forgot-password" className="text-xs text-golddark font-semibold underline">Forgot password?</Link>
+            </div>
           </div>
           <button disabled={isPending} className="bg-gold text-navydeep font-bold rounded py-3 hover:bg-amber disabled:opacity-60">
             {isPending ? 'Logging in…' : 'Log in'}
           </button>
           <p className="text-center text-sm text-slate">
-            New here? <Link href="/signup" className="text-golddark font-semibold underline">Create a free account</Link>
+            New here? <Link href="/signup" className="text-golddark font-semibold underline">Create account</Link>
           </p>
         </form>
       </div>

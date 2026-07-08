@@ -33,7 +33,11 @@ export async function uploadDocument(formData) {
       access: 'public',
     });
   } catch (err) {
-    return { error: 'Upload failed. File storage may not be configured yet — see BLOB_READ_WRITE_TOKEN in the README.' };
+    const msg = err?.message || 'unknown error';
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return { error: 'Upload failed. File storage is not configured yet — see BLOB_READ_WRITE_TOKEN in the README.' };
+    }
+    return { error: `Upload failed: ${msg}` };
   }
 
   await prisma.document.create({

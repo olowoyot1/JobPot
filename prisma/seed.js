@@ -96,7 +96,7 @@ async function main() {
         subtitle: 'Compare verified vacancies across dozens of destination countries, choose the placement package that fits your budget, and let our team handle the paperwork from application to arrival.',
         ctaLabel: 'Browse destinations',
         ctaHref: '#marketplace',
-        secondaryCtaLabel: 'Create free account',
+        secondaryCtaLabel: 'Create account',
         secondaryCtaHref: '/signup',
       },
     });

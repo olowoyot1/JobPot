@@ -115,7 +115,9 @@ GitHub integration is connected.
 ## Features
 
 - **Candidates**: signup/login, browse destinations, buy packages (optionally tied to a
-  batch), upload documents (passport, CV, certificates, photo), track order status.
+  batch), upload documents (passport, CV, certificates, photo), track order status,
+  forgot/reset password via email. Header shows Log in + Create account when logged
+  out, and Account + Log out when logged in.
 - **Admin** (`/admin`, env-var login): full control — destinations, packages, batches
   (slot pools), orders, staff accounts, affiliate oversight & commission payouts.
 - **Staff** (`/staff`, DB-backed accounts created by admin): can view/update orders and
