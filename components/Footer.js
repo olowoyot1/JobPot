@@ -14,6 +14,8 @@ export default function Footer() {
           <ul className="text-sm space-y-2">
             <li><a href="/#marketplace">Destinations</a></li>
             <li><a href="/login">Log in</a></li>
+            <li><a href="/affiliate/signup">Become a partner</a></li>
+            <li><a href="/staff/login">Staff login</a></li>
             <li><a href="/admin/login">Admin</a></li>
           </ul>
         </div>

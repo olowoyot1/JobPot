@@ -1,6 +1,7 @@
 import { prisma } from '../../lib/db';
 import { getCurrentUser } from '../../lib/require-user';
 import LogoutButton from '../../components/LogoutButton';
+import DocumentUpload from '../../components/DocumentUpload';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -9,15 +10,15 @@ export default async function AccountPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
 
-  const orders = await prisma.order.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' },
-  });
+  const [orders, documents] = await Promise.all([
+    prisma.order.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } }),
+    prisma.document.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } }),
+  ]);
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-14">
       <h1 className="font-display text-2xl text-navy mb-1">My account</h1>
-      <p className="text-sm text-slate mb-8">Your profile and placement orders.</p>
+      <p className="text-sm text-slate mb-8">Your profile, orders, and documents.</p>
 
       <div className="grid md:grid-cols-[260px_1fr] gap-7">
         <div className="bg-white border border-line rounded p-6 h-fit">
@@ -34,7 +35,7 @@ export default async function AccountPage() {
           <LogoutButton />
         </div>
 
-        <div>
+        <div className="flex flex-col gap-6">
           {orders.length === 0 ? (
             <div className="text-center py-12 text-slate border border-dashed border-line rounded">
               No packages purchased yet.<br />Browse destinations to get started.
@@ -54,6 +55,8 @@ export default async function AccountPage() {
               ))}
             </div>
           )}
+
+          <DocumentUpload documents={documents} />
         </div>
       </div>
     </main>

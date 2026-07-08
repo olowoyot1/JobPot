@@ -18,6 +18,20 @@ model Country {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   packages   Package[]
+  batches    Batch[]
+}
+
+model Batch {
+  id         String   @id @default(cuid())
+  countryId  String
+  country    Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  name       String // e.g. "January 2027 Intake"
+  totalSlots Int
+  startDate  DateTime?
+  status     String   @default("open") // open | closed
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  orders     Order[]
 }
 
 model Package {
@@ -35,26 +49,74 @@ model Package {
 }
 
 model User {
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  phone        String?
+  preferred    String?
+  password     String
+  referredById String?
+  referredBy   Affiliate?  @relation("AffiliateReferrals", fields: [referredById], references: [id])
+  createdAt    DateTime    @default(now())
+  orders       Order[]
+  documents    Document[]
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String // passport | cv | certificate | photo | other
+  fileName  String
+  fileUrl   String
+  status    String   @default("pending") // pending | approved | rejected
+  createdAt DateTime @default(now())
+}
+
+model Staff {
   id        String   @id @default(cuid())
   name      String
   email     String   @unique
-  phone     String?
-  preferred String?
   password  String
   createdAt DateTime @default(now())
-  orders    Order[]
+}
+
+model Affiliate {
+  id            String       @id @default(cuid())
+  name          String
+  email         String       @unique
+  password      String
+  code          String       @unique
+  commissionPct Int          @default(10)
+  createdAt     DateTime     @default(now())
+  referrals     User[]       @relation("AffiliateReferrals")
+  commissions   Commission[]
+}
+
+model Commission {
+  id          String    @id @default(cuid())
+  affiliateId String
+  affiliate   Affiliate @relation(fields: [affiliateId], references: [id])
+  orderId     String    @unique
+  order       Order     @relation(fields: [orderId], references: [id])
+  amount      Int
+  status      String    @default("pending") // pending | paid
+  createdAt   DateTime  @default(now())
 }
 
 model Order {
-  id          String   @id @default(cuid())
-  ref         String   @unique
+  id          String      @id @default(cuid())
+  ref         String      @unique
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
   packageId   String
-  package     Package  @relation(fields: [packageId], references: [id])
+  package     Package     @relation(fields: [packageId], references: [id])
+  batchId     String?
+  batch       Batch?      @relation(fields: [batchId], references: [id])
   countryName String
   packageName String
   price       Int
-  status      String   @default("pending") // pending | processing | approved | rejected
-  createdAt   DateTime @default(now())
+  status      String      @default("pending") // pending | processing | approved | rejected
+  createdAt   DateTime    @default(now())
+  commission  Commission?
 }

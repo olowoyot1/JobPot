@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signupAction } from '../actions/auth';
 
-export default function SignupForm({ countries }) {
+export default function SignupForm({ countries, refCode }) {
   const router = useRouter();
   const [error, setError] = useState('');
   const [isPending, startTransition] = useTransition();
@@ -21,6 +21,7 @@ export default function SignupForm({ countries }) {
 
   return (
     <form action={handleSubmit} className="flex flex-col gap-4">
+      {refCode && <input type="hidden" name="ref" value={refCode} />}
       {error && <div className="bg-red-50 border border-red-200 text-red-700 text-xs rounded px-3 py-2">{error}</div>}
       <Field label="Full name" name="name" placeholder="e.g. Amara Okonkwo" />
       <div className="grid grid-cols-2 gap-3">

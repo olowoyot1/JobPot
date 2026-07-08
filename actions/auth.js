@@ -11,6 +11,7 @@ export async function signupAction(formData) {
   const phone = String(formData.get('phone') || '').trim();
   const preferred = String(formData.get('preferred') || '').trim();
   const password = String(formData.get('password') || '');
+  const refCode = String(formData.get('ref') || '').trim();
 
   if (!name || !email || !password) {
     return { error: 'Please fill in your name, email and a password.' };
@@ -24,9 +25,15 @@ export async function signupAction(formData) {
     return { error: 'An account with this email already exists. Try logging in.' };
   }
 
+  let referredById = null;
+  if (refCode) {
+    const affiliate = await prisma.affiliate.findUnique({ where: { code: refCode } });
+    if (affiliate) referredById = affiliate.id;
+  }
+
   const hashed = await hashPassword(password);
   const user = await prisma.user.create({
-    data: { name, email, phone, preferred, password: hashed },
+    data: { name, email, phone, preferred, password: hashed, referredById },
   });
 
   const token = await signSession({ userId: user.id });

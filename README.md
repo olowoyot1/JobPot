@@ -106,10 +106,36 @@ GitHub integration is connected.
 - **Payments**: the buy flow creates an order with status `pending` — no card is charged.
   Wire up Stripe, Paystack, or Flutterwave in `actions/orders.js` (`createOrder`) before
   taking real payments.
-- **Admin user management**: there's a single admin login via env vars, not a
-  multi-admin system with roles.
 - **Emails**: no confirmation or notification emails are sent yet.
 - **Rate limiting / abuse protection**: not implemented — add before public launch.
+
+## Features
+
+- **Candidates**: signup/login, browse destinations, buy packages (optionally tied to a
+  batch), upload documents (passport, CV, certificates, photo), track order status.
+- **Admin** (`/admin`, env-var login): full control — destinations, packages, batches
+  (slot pools), orders, staff accounts, affiliate oversight & commission payouts.
+- **Staff** (`/staff`, DB-backed accounts created by admin): can view/update orders and
+  review/approve applicant documents — cannot edit destinations, packages, or prices.
+- **Affiliates** (`/affiliate/signup`, self-service): get a unique referral link
+  (`/signup?ref=CODE`), see referred candidates and their application stage, and track
+  commission earned/pending/paid on every order their referrals place.
+- **Batches**: an admin-managed slot pool per destination (e.g. "January 2027 Intake —
+  50 slots"). Candidates can optionally pick an open batch when buying a package; the
+  system prevents buying into a full or closed batch.
+
+## Extra setup: document uploads (Vercel Blob)
+
+Document uploads need a file storage bucket. Vercel Blob is the simplest option since
+you're already on Vercel:
+
+1. Vercel → your project → **Storage** tab → **Create Database** → choose **Blob**
+2. Name it, create it, **Connect** to your project
+3. This auto-injects `BLOB_READ_WRITE_TOKEN` into your project's environment variables
+4. For local development, copy that token's value into your local `.env` as well
+
+If this isn't set up yet, document uploads will show an error message rather than
+crashing the app — everything else works fine without it.
 
 ## Project structure
 

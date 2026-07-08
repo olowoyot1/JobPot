@@ -4,11 +4,12 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createOrder } from '../actions/orders';
 
-export default function BuyButton({ packageId, loggedIn }) {
+export default function BuyButton({ packageId, loggedIn, batches = [] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [confirmation, setConfirmation] = useState(null);
   const [error, setError] = useState('');
+  const [batchId, setBatchId] = useState(batches[0]?.id || '');
 
   if (!loggedIn) {
     return (
@@ -33,13 +34,24 @@ export default function BuyButton({ packageId, loggedIn }) {
   }
 
   return (
-    <div className="text-right">
+    <div className="text-right flex flex-col items-end gap-2">
+      {batches.length > 0 && (
+        <select
+          value={batchId}
+          onChange={(e) => setBatchId(e.target.value)}
+          className="text-xs border border-line rounded px-2 py-1.5 bg-paper"
+        >
+          {batches.map((b) => (
+            <option key={b.id} value={b.id}>{b.name} ({b.slotsLeft} left)</option>
+          ))}
+        </select>
+      )}
       <button
         disabled={isPending}
         onClick={() =>
           startTransition(async () => {
             setError('');
-            const res = await createOrder(packageId);
+            const res = await createOrder(packageId, batchId || null);
             if (res.error) setError(res.error);
             else setConfirmation(res.ref);
           })
@@ -48,7 +60,7 @@ export default function BuyButton({ packageId, loggedIn }) {
       >
         {isPending ? 'Processing…' : 'Buy package'}
       </button>
-      {error && <div className="text-xs text-red-600 mt-1">{error}</div>}
+      {error && <div className="text-xs text-red-600 max-w-[200px]">{error}</div>}
     </div>
   );
 }

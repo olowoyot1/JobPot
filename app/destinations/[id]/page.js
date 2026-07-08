@@ -13,11 +13,22 @@ export default async function DestinationPage({ params }) {
   const { id } = await params;
   const country = await prisma.country.findUnique({
     where: { id },
-    include: { packages: { orderBy: { price: 'asc' } } },
+    include: {
+      packages: { orderBy: { price: 'asc' } },
+      batches: { orderBy: { createdAt: 'asc' }, include: { _count: { select: { orders: true } } } },
+    },
   });
   if (!country) notFound();
 
   const user = await getCurrentUser().catch(() => null);
+
+  const openBatches = country.batches
+    .filter((b) => b.status === 'open' && b._count.orders < b.totalSlots)
+    .map((b) => ({
+      id: b.id,
+      name: b.name,
+      slotsLeft: b.totalSlots - b._count.orders,
+    }));
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-14">
@@ -32,6 +43,21 @@ export default async function DestinationPage({ params }) {
           </span>
         </div>
       </div>
+
+      {country.batches.length > 0 && (
+        <div className="mb-8 bg-white border border-line rounded p-4">
+          <h3 className="font-display text-sm text-navy mb-2 uppercase tracking-wide">Open batches</h3>
+          {openBatches.length === 0 ? (
+            <p className="text-sm text-slate">No open batches right now — check back soon.</p>
+          ) : (
+            <ul className="text-sm text-slate space-y-1">
+              {openBatches.map((b) => (
+                <li key={b.id}>{b.name} — <span className="text-teal font-semibold">{b.slotsLeft} slots left</span></li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {country.packages.length === 0 ? (
         <div className="text-center py-12 text-slate border border-dashed border-line rounded">
@@ -52,7 +78,7 @@ export default async function DestinationPage({ params }) {
                   {p.currency === 'GBP' ? '£' : p.currency + ' '}{p.price}
                   <small className="block font-body text-[10px] text-slate font-normal">service fee</small>
                 </div>
-                <BuyButton packageId={p.id} loggedIn={Boolean(user)} />
+                <BuyButton packageId={p.id} loggedIn={Boolean(user)} batches={openBatches} />
               </div>
             </div>
           ))}

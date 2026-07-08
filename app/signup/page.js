@@ -3,7 +3,10 @@ import SignupForm from '../../components/SignupForm';
 
 export const dynamic = 'force-dynamic';
 
-export default async function SignupPage() {
+export default async function SignupPage({ searchParams }) {
+  const params = await searchParams;
+  const ref = typeof params?.ref === 'string' ? params.ref : '';
+
   const countries = await prisma.country.findMany({ select: { id: true, name: true, flag: true } });
   const uniqueNames = [...new Map(countries.map((c) => [c.name, c])).values()];
 
@@ -12,7 +15,7 @@ export default async function SignupPage() {
       <div className="bg-white border border-line rounded p-8">
         <h1 className="font-display text-2xl text-navy mb-1">Create your account</h1>
         <p className="text-sm text-slate mb-6">Free to join. Takes less than two minutes.</p>
-        <SignupForm countries={uniqueNames} />
+        <SignupForm countries={uniqueNames} refCode={ref} />
       </div>
     </main>
   );
