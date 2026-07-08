@@ -1,14 +1,11 @@
 'use server';
 
-const { cookies } = require('next/headers');
-const { prisma } = require('../lib/db');
-const { hashPassword, verifyPassword } = require('../lib/password');
-const {
-  signSession,
-  signAdminSession,
-} = require('../lib/auth');
+import { cookies } from 'next/headers';
+import { prisma } from '../lib/db';
+import { hashPassword, verifyPassword } from '../lib/password';
+import { signSession, signAdminSession } from '../lib/auth';
 
-async function signupAction(formData) {
+export async function signupAction(formData) {
   const name = String(formData.get('name') || '').trim();
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const phone = String(formData.get('phone') || '').trim();
@@ -44,7 +41,7 @@ async function signupAction(formData) {
   return { success: true };
 }
 
-async function loginAction(formData) {
+export async function loginAction(formData) {
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const password = String(formData.get('password') || '');
 
@@ -69,12 +66,12 @@ async function loginAction(formData) {
   return { success: true };
 }
 
-async function logoutAction() {
+export async function logoutAction() {
   (await cookies()).delete('session');
   return { success: true };
 }
 
-async function adminLoginAction(formData) {
+export async function adminLoginAction(formData) {
   const email = String(formData.get('email') || '').trim().toLowerCase();
   const password = String(formData.get('password') || '');
 
@@ -100,15 +97,7 @@ async function adminLoginAction(formData) {
   return { success: true };
 }
 
-async function adminLogoutAction() {
+export async function adminLogoutAction() {
   (await cookies()).delete('admin_session');
   return { success: true };
 }
-
-module.exports = {
-  signupAction,
-  loginAction,
-  logoutAction,
-  adminLoginAction,
-  adminLogoutAction,
-};

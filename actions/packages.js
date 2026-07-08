@@ -1,10 +1,10 @@
 'use server';
 
-const { revalidatePath } = require('next/cache');
-const { prisma } = require('../lib/db');
-const { requireAdmin } = require('../lib/require-admin');
+import { revalidatePath } from 'next/cache';
+import { prisma } from '../lib/db';
+import { requireAdmin } from '../lib/require-admin';
 
-async function createPackage(countryId, formData) {
+export async function createPackage(countryId, formData) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
 
   const tier = String(formData.get('tier') || 'custom');
@@ -23,7 +23,7 @@ async function createPackage(countryId, formData) {
   revalidatePath('/destinations');
 }
 
-async function updatePackage(id, countryId, formData) {
+export async function updatePackage(id, countryId, formData) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
 
   const tier = String(formData.get('tier') || 'custom');
@@ -41,11 +41,9 @@ async function updatePackage(id, countryId, formData) {
   revalidatePath(`/destinations/${countryId}`);
 }
 
-async function deletePackage(id, countryId) {
+export async function deletePackage(id, countryId) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
   await prisma.package.delete({ where: { id } });
   revalidatePath(`/admin/countries/${countryId}`);
   revalidatePath(`/destinations/${countryId}`);
 }
-
-module.exports = { createPackage, updatePackage, deletePackage };

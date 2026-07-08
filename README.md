@@ -4,7 +4,6 @@ A Next.js 15 app where candidates create an account, browse destination countrie
 and buy placement packages — with an admin dashboard to manage countries, packages,
 and orders.
 
-
 ## Stack
 
 - **Next.js 15** (App Router, Server Actions)

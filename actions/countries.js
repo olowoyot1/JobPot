@@ -1,11 +1,11 @@
 'use server';
 
-const { revalidatePath } = require('next/cache');
-const { redirect } = require('next/navigation');
-const { prisma } = require('../lib/db');
-const { requireAdmin } = require('../lib/require-admin');
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { prisma } from '../lib/db';
+import { requireAdmin } from '../lib/require-admin';
 
-async function createCountry(formData) {
+export async function createCountry(formData) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
 
   const name = String(formData.get('name') || '').trim();
@@ -32,7 +32,7 @@ async function createCountry(formData) {
   revalidatePath('/');
 }
 
-async function updateCountry(id, formData) {
+export async function updateCountry(id, formData) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
 
   const name = String(formData.get('name') || '').trim();
@@ -59,12 +59,10 @@ async function updateCountry(id, formData) {
   revalidatePath('/');
 }
 
-async function deleteCountry(id) {
+export async function deleteCountry(id) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
   await prisma.country.delete({ where: { id } });
   revalidatePath('/admin/countries');
   revalidatePath('/');
   redirect('/admin/countries');
 }
-
-module.exports = { createCountry, updateCountry, deleteCountry };

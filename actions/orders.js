@@ -1,16 +1,16 @@
 'use server';
 
-const { revalidatePath } = require('next/cache');
-const { prisma } = require('../lib/db');
-const { getCurrentUser } = require('../lib/require-user');
-const { requireAdmin } = require('../lib/require-admin');
+import { revalidatePath } from 'next/cache';
+import { prisma } from '../lib/db';
+import { getCurrentUser } from '../lib/require-user';
+import { requireAdmin } from '../lib/require-admin';
 
 function generateRef() {
   const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
   return `OZ-${rand}-${new Date().getFullYear()}`;
 }
 
-async function createOrder(packageId) {
+export async function createOrder(packageId) {
   const user = await getCurrentUser();
   if (!user) return { error: 'Please log in to buy a package.' };
 
@@ -36,10 +36,8 @@ async function createOrder(packageId) {
   return { success: true, ref: order.ref };
 }
 
-async function updateOrderStatus(orderId, status) {
+export async function updateOrderStatus(orderId, status) {
   if (!(await requireAdmin())) throw new Error('Not authorized');
   await prisma.order.update({ where: { id: orderId }, data: { status } });
   revalidatePath('/admin/orders');
 }
-
-module.exports = { createOrder, updateOrderStatus };
