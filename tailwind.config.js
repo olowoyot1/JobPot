@@ -7,16 +7,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: '#0B2545',
-        navydeep: '#081B33',
-        ink: '#16213E',
-        paper: '#F7F3EA',
-        gold: '#C89B3C',
-        golddark: '#A87F2A',
-        amber: '#F2C572',
-        teal: '#2F6E63',
-        slate: '#5C6B73',
-        line: '#E4DCC8',
+        navy: '#0A0A0A',
+        navydeep: '#000000',
+        ink: '#121212',
+        paper: '#F8F6F0',
+        gold: '#E0A800',
+        golddark: '#B58900',
+        amber: '#F3C948',
+        teal: '#2E7D32',
+        slate: '#5A5A5A',
+        line: '#E3DED0',
       },
       fontFamily: {
         display: ['Fraunces', 'serif'],

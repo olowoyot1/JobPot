@@ -60,24 +60,62 @@ function defaultPackages() {
 
 async function main() {
   const existing = await prisma.country.count();
-  if (existing > 0) {
+  if (existing === 0) {
+    for (const c of COUNTRIES) {
+      await prisma.country.create({
+        data: {
+          name: c.name,
+          flag: c.flag,
+          category: c.cat,
+          vacancies: c.vac,
+          salary: c.salary,
+          industries: c.industries,
+          packages: { create: defaultPackages() },
+        },
+      });
+    }
+    console.log(`Seeded ${COUNTRIES.length} countries with default packages.`);
+  } else {
     console.log('Countries already seeded, skipping.');
-    return;
   }
-  for (const c of COUNTRIES) {
-    await prisma.country.create({
+
+  await prisma.siteSettings.upsert({
+    where: { id: 'singleton' },
+    update: {},
+    create: { id: 'singleton' },
+  });
+  console.log('Ensured site settings row exists.');
+
+  const blockCount = await prisma.pageBlock.count();
+  if (blockCount === 0) {
+    await prisma.pageBlock.create({
       data: {
-        name: c.name,
-        flag: c.flag,
-        category: c.cat,
-        vacancies: c.vac,
-        salary: c.salary,
-        industries: c.industries,
-        packages: { create: defaultPackages() },
+        type: 'hero',
+        order: 0,
+        title: 'Your next job is a departure away.',
+        subtitle: 'Compare verified vacancies across dozens of destination countries, choose the placement package that fits your budget, and let our team handle the paperwork from application to arrival.',
+        ctaLabel: 'Browse destinations',
+        ctaHref: '#marketplace',
+        secondaryCtaLabel: 'Create free account',
+        secondaryCtaHref: '/signup',
       },
     });
+    await prisma.pageBlock.create({
+      data: {
+        type: 'steps',
+        order: 1,
+        title: 'Three steps from application to arrival',
+        subtitle: 'OAATZ COSULT LTD manages the process end to end so you can focus on preparing for the move.',
+        body:
+          'Create your account :: Tell us who you are and what kind of work you\'re looking for. It takes under two minutes.\n' +
+          'Pick a destination & package :: Browse live vacancies by country, compare salaries and industries, then select a placement package.\n' +
+          'We handle the rest :: Our team coordinates your documentation, visa appointment, and pre-departure orientation.',
+      },
+    });
+    console.log('Seeded default homepage content blocks (hero + steps).');
+  } else {
+    console.log('Page blocks already exist, skipping.');
   }
-  console.log(`Seeded ${COUNTRIES.length} countries with default packages.`);
 }
 
 main()

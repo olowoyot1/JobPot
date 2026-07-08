@@ -1,4 +1,4 @@
-# OAATZ CONSULT LTD — Placement Marketplace
+# OAATZ COSULT LTD — Placement Marketplace
 
 A Next.js 15 app where candidates create an account, browse destination countries,
 and buy placement packages — with an admin dashboard to manage countries, packages,
@@ -61,7 +61,7 @@ Use the **pooled/connection-pooling** URL if offered (better for serverless).
 cd oaatz-portal
 git init
 git add .
-git commit -m "Initial commit — OAATZ Consult marketplace"
+git commit -m "Initial commit — OAATZ Cosult marketplace"
 ```
 
 Create an empty repo on GitHub (no README/license, so there's no merge conflict), then:
@@ -123,6 +123,14 @@ GitHub integration is connected.
 - **Batches**: an admin-managed slot pool per destination (e.g. "January 2027 Intake —
   50 slots"). Candidates can optionally pick an open batch when buying a package; the
   system prevents buying into a full or closed batch.
+- **Homepage content management** (`/admin/content` + `/admin/settings`): the homepage
+  above the stats bar and marketplace grid is built from an ordered list of editable
+  blocks — hero banner, "how it works" steps, rich text, call-to-action banner, image +
+  text, or raw HTML. Add, reorder (↑/↓), hide, edit, or delete sections freely — no code
+  changes or redeploys needed. `/admin/settings` controls the site name, tagline, footer
+  text, and contact details shown in the header/footer everywhere. The stats bar
+  (destination/vacancy counts) and the marketplace grid itself stay as fixed sections
+  since they're generated from live data rather than editable text.
 
 ## Extra setup: document uploads (Vercel Blob)
 

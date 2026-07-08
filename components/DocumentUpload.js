@@ -13,8 +13,8 @@ const TYPES = [
 ];
 
 const STATUS_STYLE = {
-  pending: 'bg-[#FBF3E1] text-golddark',
-  approved: 'bg-[#E4F0EC] text-teal',
+  pending: 'bg-[#F5E6BC] text-golddark',
+  approved: 'bg-[#DCEEDC] text-teal',
   rejected: 'bg-red-50 text-red-700',
 };
 

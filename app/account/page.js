@@ -48,7 +48,7 @@ export default async function AccountPage() {
                     <h4 className="font-display text-navy">{o.packageName} — {o.countryName}</h4>
                     <p className="text-xs text-slate">Ref: {o.ref} · Purchased {o.createdAt.toLocaleDateString()}</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-wide bg-[#FBF3E1] text-golddark px-3 py-1.5 rounded-full">
+                  <span className="font-mono text-[10px] uppercase tracking-wide bg-[#F5E6BC] text-golddark px-3 py-1.5 rounded-full">
                     {o.status}
                   </span>
                 </div>

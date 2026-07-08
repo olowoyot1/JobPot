@@ -1,18 +1,22 @@
 import Link from 'next/link';
 import { getCurrentUser } from '../lib/require-user';
+import { getSettings } from '../lib/settings';
 
 export default async function Navbar() {
-  const user = await getCurrentUser().catch(() => null);
+  const [user, settings] = await Promise.all([
+    getCurrentUser().catch(() => null),
+    getSettings().catch(() => ({ siteName: 'OAATZ COSULT LTD', tagline: 'Global Placement Marketplace' })),
+  ]);
 
   return (
     <nav className="sticky top-0 z-50 bg-navy text-white border-b-[3px] border-gold px-6 py-3 flex items-center justify-between">
       <Link href="/" className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-full bg-gold flex items-center justify-center font-display font-bold text-navydeep text-sm">
-          OC
+          {settings.siteName.slice(0, 2).toUpperCase()}
         </div>
         <div>
-          <div className="font-display font-bold text-lg leading-none">OAATZ CONSULT LTD</div>
-          <div className="font-mono text-[10px] tracking-[2px] text-amber uppercase">Global Placement Marketplace</div>
+          <div className="font-display font-bold text-lg leading-none">{settings.siteName}</div>
+          <div className="font-mono text-[10px] tracking-[2px] text-amber uppercase">{settings.tagline}</div>
         </div>
       </Link>
       <div className="hidden md:flex items-center gap-6 text-sm">

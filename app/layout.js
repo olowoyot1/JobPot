@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export const metadata = {
-  title: 'OAATZ CONSULT LTD — Global Placement Marketplace',
+  title: 'OAATZ COSULT LTD — Global Placement Marketplace',
   description: 'Compare verified international work vacancies and buy a placement package.',
 };
 

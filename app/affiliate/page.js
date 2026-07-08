@@ -60,7 +60,7 @@ export default async function AffiliateDashboard() {
                   <h4 className="font-display text-navy">{r.name}</h4>
                   <p className="text-xs text-slate">{r.email} · joined {r.createdAt.toLocaleDateString()}</p>
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-wide bg-[#FBF3E1] text-golddark px-3 py-1.5 rounded-full">
+                <span className="font-mono text-[10px] uppercase tracking-wide bg-[#F5E6BC] text-golddark px-3 py-1.5 rounded-full">
                   {latest ? latest.status : 'no application yet'}
                 </span>
               </div>
@@ -80,7 +80,7 @@ export default async function AffiliateDashboard() {
                 <h4 className="font-display text-navy">£{c.amount} — {c.order.packageName}</h4>
                 <p className="text-xs text-slate">Order {c.order.ref} · {c.createdAt.toLocaleDateString()}</p>
               </div>
-              <span className={`font-mono text-[10px] uppercase tracking-wide px-3 py-1.5 rounded-full ${c.status === 'paid' ? 'bg-[#E4F0EC] text-teal' : 'bg-[#FBF3E1] text-golddark'}`}>
+              <span className={`font-mono text-[10px] uppercase tracking-wide px-3 py-1.5 rounded-full ${c.status === 'paid' ? 'bg-[#DCEEDC] text-teal' : 'bg-[#F5E6BC] text-golddark'}`}>
                 {c.status}
               </span>
             </div>

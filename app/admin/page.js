@@ -5,7 +5,7 @@ import AdminLogoutButton from '../../components/AdminLogoutButton';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminHome() {
-  const [countryCount, packageCount, orderCount, userCount, staffCount, affiliateCount, docCount, batchCount] = await Promise.all([
+  const [countryCount, packageCount, orderCount, userCount, staffCount, affiliateCount, docCount, batchCount, blockCount] = await Promise.all([
     prisma.country.count(),
     prisma.package.count(),
     prisma.order.count(),
@@ -14,6 +14,7 @@ export default async function AdminHome() {
     prisma.affiliate.count(),
     prisma.document.count(),
     prisma.batch.count(),
+    prisma.pageBlock.count(),
   ]);
 
   return (
@@ -35,9 +36,18 @@ export default async function AdminHome() {
         <Stat label="Documents" value={docCount} />
         <Stat label="Staff" value={staffCount} />
         <Stat label="Affiliates" value={affiliateCount} />
+        <Stat label="Content blocks" value={blockCount} />
       </div>
 
       <div className="grid md:grid-cols-3 gap-5">
+        <Link href="/admin/content" className="bg-white border border-line rounded p-6 hover:shadow-md">
+          <h3 className="font-display text-lg text-navy mb-1">Homepage content</h3>
+          <p className="text-sm text-slate">Add, reorder, hide, or delete homepage sections — hero, steps, banners, images, and more.</p>
+        </Link>
+        <Link href="/admin/settings" className="bg-white border border-line rounded p-6 hover:shadow-md">
+          <h3 className="font-display text-lg text-navy mb-1">Site settings</h3>
+          <p className="text-sm text-slate">Brand name, tagline, footer text, and contact details shown site-wide.</p>
+        </Link>
         <Link href="/admin/countries" className="bg-white border border-line rounded p-6 hover:shadow-md">
           <h3 className="font-display text-lg text-navy mb-1">Destinations, packages & batches</h3>
           <p className="text-sm text-slate">Add countries, upload placement packages, and open batch slot pools for each.</p>

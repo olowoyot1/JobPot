@@ -9,18 +9,18 @@ html {
 }
 
 body {
-  background: #F7F3EA;
-  color: #16213E;
+  background: #F8F6F0;
+  color: #121212;
   font-family: 'Inter', sans-serif;
 }
 
 .tag {
   font-size: 11px;
-  background: #F7F3EA;
-  border: 1px solid #E4DCC8;
+  background: #F8F6F0;
+  border: 1px solid #E3DED0;
   padding: 3px 9px;
   border-radius: 20px;
-  color: #5C6B73;
+  color: #5A5A5A;
 }
 
 .badge {
@@ -32,6 +32,6 @@ body {
   border-radius: 20px;
   font-weight: 600;
 }
-.badge.bilateral { background: #EFE6D2; color: #A87F2A; }
-.badge.schengen { background: #DEE9E6; color: #2F6E63; }
-.badge.nonschengen { background: #E7E1F5; color: #5B4B9E; }
+.badge.bilateral { background: #F5E6BC; color: #8A6A00; }
+.badge.schengen { background: #DCEEDC; color: #2E7D32; }
+.badge.nonschengen { background: #E6E6E6; color: #1A1A1A; }
