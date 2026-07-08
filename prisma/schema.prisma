@@ -70,7 +70,7 @@ model Document {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   type      String // passport | cv | certificate | photo | other
   fileName  String
-  fileUrl   String
+  fileUrl   String // private blob pathname — used to mint fresh signed URLs on demand
   status    String   @default("pending") // pending | approved | rejected
   createdAt DateTime @default(now())
 }

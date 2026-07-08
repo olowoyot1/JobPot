@@ -165,15 +165,25 @@ from external servers (like Vercel) for security. If sending fails, check cPanel
 under WHM if you have access, or contact your hosting provider) to confirm outbound
 SMTP auth from external IPs is allowed on your plan.
 
-## Extra setup: document uploads (Vercel Blob)
+## Extra setup: document uploads (Vercel Blob — private storage)
 
-Document uploads need a file storage bucket. Vercel Blob is the simplest option since
-you're already on Vercel:
+Applicant documents (passports, CVs, certificates) are sensitive, so they're stored in
+a **private** Blob store rather than a public one. Private blobs aren't reachable via a
+public URL — instead, the app mints a short-lived **signed URL** (valid for 10 minutes)
+each time a document link is rendered on `/account` or `/staff`, using Vercel Blob's
+signed URL feature. Marketing/content images (uploaded via `/admin/content`) stay in
+public storage, since those are meant to be publicly visible on the homepage.
 
 1. Vercel → your project → **Storage** tab → **Create Database** → choose **Blob**
-2. Name it, create it, **Connect** to your project
-3. This auto-injects `BLOB_READ_WRITE_TOKEN` into your project's environment variables
-4. For local development, copy that token's value into your local `.env` as well
+2. **Important**: when prompted for access mode, choose **Private** (not Public) —
+   the code expects a private store and will error on a public one
+3. Name it, create it, **Connect** to your project
+4. This auto-injects `BLOB_READ_WRITE_TOKEN` into your project's environment variables
+5. For local development, copy that token's value into your local `.env` as well
+
+Note: a Blob store's access mode (public/private) is set at creation and can't be
+changed afterward — if you accidentally created a public one, create a new private
+store and reconnect it (this issues a new `BLOB_READ_WRITE_TOKEN`, so redeploy after).
 
 If this isn't set up yet, document uploads will show an error message rather than
 crashing the app — everything else works fine without it.

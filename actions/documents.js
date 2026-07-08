@@ -30,7 +30,7 @@ export async function uploadDocument(formData) {
   let blob;
   try {
     blob = await put(`documents/${user.id}/${Date.now()}-${file.name}`, file, {
-      access: 'public',
+      access: 'private',
     });
   } catch (err) {
     const msg = err?.message || 'unknown error';
@@ -45,7 +45,7 @@ export async function uploadDocument(formData) {
       userId: user.id,
       type,
       fileName: file.name,
-      fileUrl: blob.url,
+      fileUrl: blob.pathname, // stores the blob's pathname, not a public URL — this store is private
     },
   });
 
@@ -61,7 +61,7 @@ export async function deleteDocument(id) {
   if (!doc || doc.userId !== user.id) return { error: 'Not found' };
 
   try {
-    await del(doc.fileUrl);
+    await del(doc.fileUrl, { access: 'private' });
   } catch {
     // ignore storage cleanup failures
   }

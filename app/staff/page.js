@@ -1,4 +1,5 @@
 import { prisma } from '../../lib/db';
+import { getSignedViewUrl } from '../../lib/blob-signed-url';
 import OrderStatusForm from '../../components/OrderStatusForm';
 import DocumentStatusForm from '../../components/DocumentStatusForm';
 import StaffLogoutButton from '../../components/StaffLogoutButton';
@@ -6,10 +7,14 @@ import StaffLogoutButton from '../../components/StaffLogoutButton';
 export const dynamic = 'force-dynamic';
 
 export default async function StaffDashboard() {
-  const [orders, documents] = await Promise.all([
+  const [orders, documentsRaw] = await Promise.all([
     prisma.order.findMany({ orderBy: { createdAt: 'desc' }, include: { user: true } }),
     prisma.document.findMany({ orderBy: { createdAt: 'desc' }, include: { user: true } }),
   ]);
+
+  const documents = await Promise.all(
+    documentsRaw.map(async (d) => ({ ...d, viewUrl: await getSignedViewUrl(d.fileUrl) }))
+  );
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-14">
@@ -51,7 +56,11 @@ export default async function StaffDashboard() {
                 <h4 className="font-display text-navy capitalize">{d.type}</h4>
                 <p className="text-xs text-slate">{d.user.name} ({d.user.email}) · {d.fileName} · {d.createdAt.toLocaleDateString()}</p>
               </div>
-              <a href={d.fileUrl} target="_blank" rel="noreferrer" className="text-xs font-semibold text-golddark underline">View file</a>
+              {d.viewUrl ? (
+                <a href={d.viewUrl} target="_blank" rel="noreferrer" className="text-xs font-semibold text-golddark underline">View file</a>
+              ) : (
+                <span className="text-xs text-slate">Unavailable</span>
+              )}
               <DocumentStatusForm docId={d.id} status={d.status} />
             </div>
           ))}

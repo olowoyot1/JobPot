@@ -65,7 +65,11 @@ export default function DocumentUpload({ documents }) {
             <div key={d.id} className="flex items-center justify-between border-t border-line pt-2 text-sm">
               <div>
                 <span className="font-medium capitalize">{d.type}</span>{' '}
-                <a href={d.fileUrl} target="_blank" rel="noreferrer" className="text-golddark underline">{d.fileName}</a>
+                {d.viewUrl ? (
+                  <a href={d.viewUrl} target="_blank" rel="noreferrer" className="text-golddark underline">{d.fileName}</a>
+                ) : (
+                  <span className="text-slate">{d.fileName}</span>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <span className={`font-mono text-[10px] uppercase px-2 py-1 rounded-full ${STATUS_STYLE[d.status] || ''}`}>{d.status}</span>

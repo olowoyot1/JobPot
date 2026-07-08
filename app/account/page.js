@@ -1,5 +1,6 @@
 import { prisma } from '../../lib/db';
 import { getCurrentUser } from '../../lib/require-user';
+import { getSignedViewUrl } from '../../lib/blob-signed-url';
 import LogoutButton from '../../components/LogoutButton';
 import DocumentUpload from '../../components/DocumentUpload';
 import { redirect } from 'next/navigation';
@@ -10,10 +11,14 @@ export default async function AccountPage() {
   const user = await getCurrentUser();
   if (!user) redirect('/login');
 
-  const [orders, documents] = await Promise.all([
+  const [orders, documentsRaw] = await Promise.all([
     prisma.order.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } }),
     prisma.document.findMany({ where: { userId: user.id }, orderBy: { createdAt: 'desc' } }),
   ]);
+
+  const documents = await Promise.all(
+    documentsRaw.map(async (d) => ({ ...d, viewUrl: await getSignedViewUrl(d.fileUrl) }))
+  );
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-14">
