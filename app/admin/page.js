@@ -5,7 +5,7 @@ import AdminLogoutButton from '../../components/AdminLogoutButton';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminHome() {
-  const [countryCount, packageCount, orderCount, userCount, staffCount, affiliateCount, docCount, batchCount, blockCount] = await Promise.all([
+  const [countryCount, packageCount, orderCount, userCount, staffCount, affiliateCount, docCount, batchCount, blockCount, cvCount] = await Promise.all([
     prisma.country.count(),
     prisma.package.count(),
     prisma.order.count(),
@@ -15,6 +15,7 @@ export default async function AdminHome() {
     prisma.document.count(),
     prisma.batch.count(),
     prisma.pageBlock.count(),
+    prisma.cvSubmission.count(),
   ]);
 
   return (
@@ -34,6 +35,7 @@ export default async function AdminHome() {
         <Stat label="Orders" value={orderCount} />
         <Stat label="Candidates" value={userCount} />
         <Stat label="Documents" value={docCount} />
+        <Stat label="CV submissions" value={cvCount} />
         <Stat label="Staff" value={staffCount} />
         <Stat label="Affiliates" value={affiliateCount} />
         <Stat label="Content blocks" value={blockCount} />
@@ -55,6 +57,10 @@ export default async function AdminHome() {
         <Link href="/admin/orders" className="bg-white border border-line rounded p-6 hover:shadow-md">
           <h3 className="font-display text-lg text-navy mb-1">Orders</h3>
           <p className="text-sm text-slate">Review candidate purchases and update processing status.</p>
+        </Link>
+        <Link href="/admin/cv" className="bg-white border border-line rounded p-6 hover:shadow-md">
+          <h3 className="font-display text-lg text-navy mb-1">CV submissions</h3>
+          <p className="text-sm text-slate">View CVs candidates submitted at /cv and download them as PDFs in any format.</p>
         </Link>
         <Link href="/admin/staff" className="bg-white border border-line rounded p-6 hover:shadow-md">
           <h3 className="font-display text-lg text-navy mb-1">Staff accounts</h3>

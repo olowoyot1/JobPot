@@ -151,3 +151,26 @@ model SiteSettings {
   businessHours   String   @default("Mon-Fri, 09:00-18:00")
   updatedAt       DateTime @updatedAt
 }
+
+model CvSubmission {
+  id           String   @id @default(cuid())
+  format       String   @default("uk") // uk | canada | dubai | europass
+  name         String
+  role         String?
+  email        String?
+  phone        String?
+  location     String?
+  summary      String?
+  skills       String? // comma-separated
+  languages    String? // comma-separated
+  dob          String?
+  nationality  String?
+  marital      String?
+  visa         String?
+  objective    String?
+  includePhoto Boolean  @default(true)
+  photoUrl     String? // private blob pathname
+  experience   Json?
+  education    Json?
+  createdAt    DateTime @default(now())
+}

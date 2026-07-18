@@ -22,6 +22,7 @@ export default async function Navbar() {
       </Link>
       <div className="hidden md:flex items-center gap-6 text-sm">
         <Link href="/#marketplace" className="opacity-80 hover:opacity-100">Destinations</Link>
+        <Link href="/cv" className="opacity-80 hover:opacity-100">Submit CV</Link>
         {user && <Link href="/account" className="opacity-80 hover:opacity-100">My Account</Link>}
       </div>
       <div className="flex items-center gap-3">
